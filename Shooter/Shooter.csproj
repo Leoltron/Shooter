@@ -76,9 +76,22 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Textures\Player\Player.pdn" />
+    <None Include="Textures\Player\Player_.pdn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Textures\Player\boosters_0.png" />
+    <Content Include="Textures\Player\boosters_1.png" />
+    <Content Include="Textures\Player\boosters_2.png" />
+    <Content Include="Textures\Player\boosters_3.png" />
+    <Content Include="Textures\Player\Guns\Basic\0.png" />
+    <Content Include="Textures\Player\Guns\Basic\1.png" />
+    <Content Include="Textures\Player\Guns\Basic\2.png" />
+    <Content Include="Textures\Player\Guns\Basic\3.png" />
+    <Content Include="Textures\Player\player_base.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
