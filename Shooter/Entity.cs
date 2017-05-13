@@ -56,7 +56,7 @@ namespace Shooter
             if (!IsDead)
             {
                 Health -= damage;
-                if (Health < 0)
+                if (Health <= 0)
                     SetDead(source);
             }
         }
