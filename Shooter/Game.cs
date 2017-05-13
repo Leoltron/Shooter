@@ -1,28 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shooter
 {
     public class Game
     {
-        public Player Player;
-        private List<Entity> entities;
-        private bool IsPaused;
+        private readonly Player player;
+        private readonly List<Entity> entities;
         private float width;
         private float height;
+
+        private int shootingDelay;
+        private int currentShootingDelay;
 
         public event Action GameOver;
 
         public int Score { get; private set; }
 
-        public Game()
+        public Game(float width, float height)
         {
+            this.width = width;
+            this.height = height;
+
             entities = new List<Entity>();
-            //Player = new Player();
+            player = new Player();
+            AddEntity(player);
+            shootingDelay = 20;
+            currentShootingDelay = 0;
         }
 
         public void AddEntity(Entity entity)
@@ -30,18 +35,19 @@ namespace Shooter
             entities.Add(entity);
         }
 
-        public void OnGameTick()
+        public void GameTick()
         {
-            if (IsPaused)
-                return;
-            Player.OnEntityTick();
+            currentShootingDelay = Math.Max(currentShootingDelay - 1, 0);
             foreach (var entity in entities)
                 entity.OnEntityTick();
 
-            foreach (var VARIABLE in entities.Where(e => e.TargetType == TargetType.Enemy))
-            {
-                
-            }
+            foreach (var entity1 in entities)
+            foreach (var entity2 in entities)
+                if (entity1.IsTarget(entity2) && entity1.CollidesWith(entity2))
+                    entity1.OnCollideWithTarget(entity2);
+
+            foreach (var entity in entities.Where(e => e.IsDead))
+                OnEntityKilled(entity, entity.DeathSource);
 
             entities.RemoveAll(e => e.IsDead);
         }
@@ -49,46 +55,43 @@ namespace Shooter
         public void SetPlayerGoingLeft(bool isGoingLeft)
         {
             if (isGoingLeft)
-                Player.HorizontalMovement = -1;
-            else if (Player.HorizontalMovement < 0)
-                Player.HorizontalMovement = 0;
+                player.HorizontalMovement = -1;
+            else if (player.HorizontalMovement < 0)
+                player.HorizontalMovement = 0;
         }
 
         public void SetPlayerGoingRight(bool isGoingRight)
         {
             if (isGoingRight)
-                Player.HorizontalMovement = 1;
-            else if (Player.HorizontalMovement > 0)
-                Player.HorizontalMovement = 0;
+                player.HorizontalMovement = 1;
+            else if (player.HorizontalMovement > 0)
+                player.HorizontalMovement = 0;
         }
 
         public void SetPlayerGoingDown(bool isGoingDown)
         {
             if (isGoingDown)
-                Player.VerticalMovement = 1;
-            else if (Player.VerticalMovement > 0)
-                Player.VerticalMovement = 0;
+                player.VerticalMovement = 1;
+            else if (player.VerticalMovement > 0)
+                player.VerticalMovement = 0;
         }
 
         public void SetPlayerGoingUp(bool isGoingUp)
         {
             if (isGoingUp)
-                Player.VerticalMovement = -1;
-            else if (Player.VerticalMovement < 0)
-                Player.VerticalMovement = 0;
+                player.VerticalMovement = -1;
+            else if (player.VerticalMovement < 0)
+                player.VerticalMovement = 0;
         }
 
-        public void Pause()
+        public void Fire()
         {
-            IsPaused = true;
+            if (currentShootingDelay != 0) return;
+            AddEntity(new Bullet(this, player, player.X, player.Y, 0, -1).SetTargetType(TargetType.Enemy));
+            currentShootingDelay = shootingDelay;
         }
 
-        public void Unpause()
-        {
-            IsPaused = false;
-        }
-
-        public void OnEntityKilled(Entity entity, Entity killer)
+        private void OnEntityKilled(Entity entity, Entity killer)
         {
             var killerWeapon = killer as IWeapon;
             if (killerWeapon != null)
@@ -97,17 +100,14 @@ namespace Shooter
             {
                 if (entity == null)
                     return;
-                if (entity == Player)
-                {
-                    Pause();
+                if (entity == player)
                     GameOver?.Invoke();
-                }
-                if (killer != null && killer == Player)
+                if (killer != null && killer == player)
                     OnEnemyKilledByPlayer(entity);
             }
         }
 
-        public void OnEnemyKilledByPlayer(Entity enemy)
+        private void OnEnemyKilledByPlayer(Entity enemy)
         {
             Score++;
         }

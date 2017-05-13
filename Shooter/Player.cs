@@ -7,8 +7,7 @@ namespace Shooter
         public float Speed;
         public float BulletSpeed;
 
-        public Player(Game game,
-            float bulletSpeed = 1f,
+        public Player(float bulletSpeed = 1f,
             int x = 0,
             int y = 0,
             float velX = 0,
@@ -16,7 +15,7 @@ namespace Shooter
             int health = 1,
             float direction = 0,
             float speed = 0) :
-            base(game, x, y, velX, velY, health, direction)
+            base(x, y, velX, velY, health, direction)
         {
             BulletSpeed = bulletSpeed;
             Speed = speed;
@@ -57,11 +56,6 @@ namespace Shooter
         {
             VelX = HorizontalMovement * Speed;
             VelY = VerticalMovement * Speed;
-        }
-
-        public void Fire()
-        {
-            Game.AddEntity(new Bullet(Game, this, X, Y, 0, -1).SetTargetType(TargetType.Enemy));
         }
     }
 }

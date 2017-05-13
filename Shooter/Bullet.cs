@@ -30,7 +30,7 @@ namespace Shooter
             int health = 1,
             float direction = 0,
             int damage = 1,
-            int howManyCanDamage = 1) : base(game, x, y, velX, velY, health, direction)
+            int howManyCanDamage = 1) : base(x, y, velX, velY, health, direction)
         {
             this.source = source;
             VelX = source.VelX;
@@ -43,11 +43,11 @@ namespace Shooter
             Health = howManyCanDamage;
         }
 
-        public override void OnCollideWith(Entity entity)
+        public override void OnCollideWithTarget(Entity targetEntity)
         {
-            if (Damage == 0 || !IsTarget(entity) || entity.IsDead) return;
-            entity.DamageEntity(this, Damage);
-            DamageEntity(entity, 1);
+            if (Damage == 0 || targetEntity.IsDead) return;
+            targetEntity.DamageEntity(this, Damage);
+            DamageEntity(targetEntity, 1);
         }
 
         public Entity GetSource()

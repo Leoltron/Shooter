@@ -51,7 +51,7 @@
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IEnemy.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="IWeapon.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />

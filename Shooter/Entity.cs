@@ -5,10 +5,10 @@ namespace Shooter
 {
     public class Entity
     {
-        public Game Game { get; private set; }
         public int Health { get; protected set; }
         private CollisionBox collisionBox = null;
         public TargetType TargetType { get; protected set; }
+        public Entity DeathSource { get; private set; }
 
         public float X;
         public float Y;
@@ -21,15 +21,13 @@ namespace Shooter
         public bool IsDead { get; protected set; }
 
 
-        public Entity(Game game,
-            float x = 0,
+        public Entity(float x = 0,
             float y = 0,
             float velX = 0,
             float velY = 0,
             int health = 1,
             float direction = 0)
         {
-            Game = game;
             X = x;
             Y = y;
             Direction = direction;
@@ -42,7 +40,9 @@ namespace Shooter
         public virtual void OnEntityTick()
         {
             if (!IsDead)
+            {
                 Move();
+            }
         }
 
         public virtual void Move()
@@ -57,16 +57,14 @@ namespace Shooter
             {
                 Health -= damage;
                 if (Health < 0)
-                {
-                    SetDead();
-                    Game.OnEntityKilled(this, source);
-                }
+                    SetDead(source);
             }
         }
 
-        public void SetDead()
+        public void SetDead(Entity source)
         {
             IsDead = true;
+            DeathSource = source;
         }
 
         public void AlignDirectionByVelocity()
@@ -74,11 +72,11 @@ namespace Shooter
             Direction = (float) Math.Atan2(VelY, VelX);
         }
 
-        public virtual void OnCollideWith(Entity entity)
+        public virtual void OnCollideWithTarget(Entity targetEntity)
         {
         }
 
-        public bool AreCollidingWith(Entity entity)
+        public bool CollidesWith(Entity entity)
         {
             if (collisionBox == null || entity.collisionBox == null)
                 return false;
@@ -111,8 +109,6 @@ namespace Shooter
                 return false;
             switch (TargetType)
             {
-                case TargetType.None:
-                    return false;
                 case TargetType.Enemy:
                     return entity is Enemy;
                 case TargetType.EnemyBullets:
