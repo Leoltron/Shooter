@@ -8,7 +8,7 @@ namespace Shooter
         public int Damage { get; private set; }
 
         public Bullet(Entity source, int health = 1, int damage = 1, int howManyCanDamage = 1) :
-            this(source.Game,
+            this(
                 source,
                 source.X,
                 source.Y,
@@ -21,7 +21,6 @@ namespace Shooter
         }
 
         public Bullet(
-            Game game,
             Entity source,
             float x = 0,
             float y = 0,

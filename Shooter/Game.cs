@@ -87,7 +87,7 @@ namespace Shooter
         public void Fire()
         {
             if (currentShootingDelay != 0) return;
-            AddEntity(new Bullet(this, player, player.X, player.Y, 0, -1).SetTargetType(TargetType.Enemy));
+            AddEntity(new Bullet(player, player.X, player.Y, 0, -1).SetTargetType(TargetType.Enemy));
             currentShootingDelay = shootingDelay;
         }
 
