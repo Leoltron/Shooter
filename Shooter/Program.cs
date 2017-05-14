@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace Shooter
 {
@@ -7,7 +8,7 @@ namespace Shooter
         [STAThread]
         static void Main()
         {
-            //Application.Run(new GameForm());
+            Application.Run(new GameForm());
         }
     }
 }

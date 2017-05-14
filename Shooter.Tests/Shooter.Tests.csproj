@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shooter\Shooter.csproj">
-      <Project>{C22712C3-856F-4C73-B960-76D644A3A42C}</Project>
+      <Project>{c22712c3-856f-4c73-b960-76d644a3a42c}</Project>
       <Name>Shooter</Name>
     </ProjectReference>
   </ItemGroup>

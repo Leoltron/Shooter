@@ -121,5 +121,10 @@ namespace Shooter
                     return false;
             }
         }
+
+        public virtual String GetTextureFileName()
+        {
+            return "";
+        }
     }
 }

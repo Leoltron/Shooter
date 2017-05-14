@@ -8,6 +8,7 @@ namespace Shooter
     {
         private readonly Player player;
         private readonly List<Entity> entities;
+        public IEnumerable<Entity> GetEntities => entities;
         private float width;
         private float height;
 
@@ -17,6 +18,7 @@ namespace Shooter
         public event Action GameOver;
 
         public int Score { get; private set; }
+        public object Health => player.Health;
 
         public Game(float width, float height)
         {
