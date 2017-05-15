@@ -5,23 +5,12 @@ namespace Shooter
     class Bullet : Entity, IWeapon
     {
         private readonly Entity source;
+        private ISizeProvider sizeProvider;
         public int Damage { get; private set; }
-
-        public Bullet(Entity source, int health = 1, int damage = 1, int howManyCanDamage = 1) :
-            this(
-                source,
-                source.X,
-                source.Y,
-                source.VelX,
-                source.VelY,
-                health,
-                damage,
-                howManyCanDamage)
-        {
-        }
 
         public Bullet(
             Entity source,
+            ISizeProvider sizeProvider,
             float x = 0,
             float y = 0,
             float velX = 0,
@@ -31,15 +20,15 @@ namespace Shooter
             int damage = 1,
             int howManyCanDamage = 1) : base(x, y, velX, velY, health, direction)
         {
+            this.sizeProvider = sizeProvider;
             this.source = source;
-            VelX = source.VelX;
-            VelY = source.VelY;
             AlignDirectionByVelocity();
 
             Damage = damage;
             if (howManyCanDamage < 0)
                 throw new ArgumentException(nameof(howManyCanDamage) + " must be non-negative!");
             Health = howManyCanDamage;
+            CollisionBox = new CollisionBox(this, 1, 1);
         }
 
         public override void OnCollideWithTarget(Entity targetEntity)
@@ -58,6 +47,24 @@ namespace Shooter
         {
             TargetType = targetType;
             return this;
+        }
+
+        public override void OnEntityTick()
+        {
+            if (IsOutside())
+                SetDead(null);
+            else
+                base.OnEntityTick();
+        }
+
+        private bool IsOutside()
+        {
+            return X < 0 || Y < 0 || X > sizeProvider.Width || Y > sizeProvider.Height;
+        }
+
+        public override string GetTextureFileName()
+        {
+            return "Bullet.png";
         }
     }
 }

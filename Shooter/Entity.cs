@@ -3,20 +3,20 @@ using System.Deployment.Application;
 
 namespace Shooter
 {
-    public class Entity
+    public class Entity : ICoordinatesProvider
     {
         public int Health { get; protected set; }
-        private CollisionBox collisionBox = null;
+        public CollisionBox CollisionBox { get; protected set; }
         public TargetType TargetType { get; protected set; }
         public Entity DeathSource { get; private set; }
 
-        public float X;
-        public float Y;
+        public float X { get; protected set; }
+        public float Y { get; protected set; }
 
         public float Direction;
 
-        public float VelX;
-        public float VelY;
+        public float VelX { get; protected set; }
+        public float VelY { get; protected set; }
 
         public bool IsDead { get; protected set; }
 
@@ -69,7 +69,7 @@ namespace Shooter
 
         public void AlignDirectionByVelocity()
         {
-            Direction = (float) Math.Atan2(VelY, VelX);
+            Direction = (float) Math.Atan2(-VelY, VelX);
         }
 
         public virtual void OnCollideWithTarget(Entity targetEntity)
@@ -78,29 +78,13 @@ namespace Shooter
 
         public bool CollidesWith(Entity entity)
         {
-            if (collisionBox == null || entity.collisionBox == null)
+            if (CollisionBox == null || entity.CollisionBox == null)
                 return false;
 
-            var halfW = collisionBox.Width / 2;
-            var thisLeft = X - halfW;
-            var thisRight = X + halfW;
-
-            var halfH = collisionBox.Height / 2;
-            var thisTop = Y + halfH;
-            var thisBottom = Y - halfH;
-
-            halfW = entity.collisionBox.Width / 2;
-            var otherLeft = entity.X - halfW;
-            var otherRight = entity.X + halfW;
-
-            halfH = entity.collisionBox.Height / 2;
-            var otherTop = entity.Y + halfH;
-            var otherBottom = entity.Y - halfH;
-
-            return thisLeft <= otherRight &&
-                   thisRight >= otherLeft &&
-                   thisTop <= otherBottom &&
-                   thisBottom >= otherTop;
+            return CollisionBox.Left <= entity.CollisionBox.Right &&
+                   CollisionBox.Right >= entity.CollisionBox.Left &&
+                   CollisionBox.Top <= entity.CollisionBox.Bottom &&
+                   CollisionBox.Bottom >= entity.CollisionBox.Top;
         }
 
         public bool IsTarget(Entity entity)
@@ -125,6 +109,11 @@ namespace Shooter
         public virtual String GetTextureFileName()
         {
             return "";
+        }
+
+        public override string ToString()
+        {
+            return $"{GetType().Name}: X: {X} Y: {Y} VelX: {VelX} VelY: {VelY}";
         }
     }
 }

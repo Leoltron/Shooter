@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Shooter
@@ -12,8 +9,13 @@ namespace Shooter
     {
         private Game game;
         private Timer gameTimer;
-        private bool IsGameActive = false;
-        private readonly EnemyDrawer enemyDrawer;
+        private bool IsGameActive;
+        private bool debugMode;
+
+        private readonly EntityDrawer entityDrawer;
+        private readonly PlayerDrawer playerDrawer;
+
+        private BackgroundDrawer bgDrawer;
 
         //private Button btn;
 
@@ -31,23 +33,33 @@ namespace Shooter
             Text = "Shooter";
             DoubleBuffered = true;
             MinimumSize = new Size(400, 400);
-            Size = new Size(500, 500);
-            KeyDown += (sender, keyArgs) => HandleMoveKey(keyArgs.KeyCode, true);
+            Size = new Size(750, 750);
+            KeyDown += (sender, keyArgs) =>
+            {
+                if (keyArgs.KeyCode == Keys.D && keyArgs.Modifiers == Keys.Control)
+                    debugMode = !debugMode;
+                else
+                    HandleMoveKey(keyArgs.KeyCode, true);
+            };
             KeyUp += (sender, keyArgs) => HandleMoveKey(keyArgs.KeyCode, false);
-            enemyDrawer = new EnemyDrawer();
+            entityDrawer = new EntityDrawer();
+            playerDrawer = new PlayerDrawer();
             StartNewGame();
         }
 
+
         private void StartNewGame()
         {
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             gameTimer?.Stop();
             game = new Game(ClientSize.Width, ClientSize.Height);
-            gameTimer = new Timer {Interval = 50};
+            bgDrawer = new BackgroundDrawer(ClientSize.Width, ClientSize.Height);
+            gameTimer = new Timer {Interval = 10};
             gameTimer.Tick += (sender, args) =>
             {
                 game.GameTick();
+                bgDrawer.Tick();
                 Invalidate();
             };
             gameTimer.Start();
@@ -109,11 +121,19 @@ namespace Shooter
         {
             base.OnPaint(eventArgs);
             var graphics = eventArgs.Graphics;
-            foreach (var entity in game.GetEntities)
-                enemyDrawer.DrawEntity(graphics, entity);
+            DrawGameEntities(graphics);
             DrawGui(graphics);
             if (gameTimer != null && !gameTimer.Enabled)
                 DrawPauseScreen(graphics);
+        }
+
+        private void DrawGameEntities(Graphics graphics)
+        {
+            foreach (var entity in game.GetEntities)
+                if (entity is Player)
+                    playerDrawer.DrawPlayer((Player)entity, graphics, debugMode);
+                else
+                    entityDrawer.DrawEntity(graphics, entity, debugMode);
         }
 
         private void DrawPauseScreen(Graphics graphics)
@@ -145,7 +165,7 @@ namespace Shooter
                     LineAlignment = StringAlignment.Near
                 });
             graphics.DrawString(
-                $"HP: {game.Health}",
+                $"HP: {game.Player.Health}",
                 new Font("Courier", 16),
                 Brushes.Red,
                 new Rectangle(new Point(0, 0), ClientSize),
@@ -154,12 +174,23 @@ namespace Shooter
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Near
                 });
+            if (debugMode)
+                graphics.DrawString(
+                    game.Player.ToString(),
+                    new Font("Courier", 10),
+                    Brushes.MediumSpringGreen,
+                    new Rectangle(new Point(0, 0), ClientSize),
+                    new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Far
+                    });
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-            e.Graphics.FillRectangle(Brushes.Black, 0, 0, ClientSize.Width, ClientSize.Height);
+            bgDrawer?.DrawBackground(e.Graphics);
         }
     }
 }

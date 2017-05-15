@@ -4,24 +4,32 @@ namespace Shooter
 {
     public class Player : Entity
     {
-        public float Speed;
-        public float BulletSpeed;
+        private readonly float speed;
+        private readonly ISizeProvider sizeProvider;
+        public float SpeedMultiplier = 1;
 
-        public Player(float bulletSpeed = 1f,
+        public int BoostersLevel { get; private set; }
+        public const int MaxBoostersLevel = 3;
+        public int GunsAmountLevel { get; private set; }
+        public const int MaxGunsAmountLevel = 3;
+
+        public Player(
+            ISizeProvider sizeProvider,
             int x = 0,
             int y = 0,
             float velX = 0,
             float velY = 0,
             int health = 1,
             float direction = 0,
-            float speed = 0) :
+            float speed = 1) :
             base(x, y, velX, velY, health, direction)
         {
-            BulletSpeed = bulletSpeed;
-            Speed = speed;
+            this.sizeProvider = sizeProvider;
+            this.speed = speed;
             verticalMovement = 0;
             horizontalMovement = 0;
             TargetType = TargetType.None;
+            CollisionBox = new CollisionBox(this,64,64);
         }
 
         private int verticalMovement;
@@ -54,8 +62,27 @@ namespace Shooter
 
         private void UpdateVelocity()
         {
-            VelX = HorizontalMovement * Speed;
-            VelY = VerticalMovement * Speed;
+            VelX = HorizontalMovement * SpeedMultiplier * speed;
+            VelY = VerticalMovement * SpeedMultiplier * speed;
+        }
+
+        public override void Move()
+        {
+            var maxLeftMovement = -CollisionBox.Left;
+            var maxRightMovement = sizeProvider.Width- CollisionBox.Right;
+            var maxUpMovement = -CollisionBox.Top;
+            var maxDownMovement = sizeProvider.Height - CollisionBox.Bottom;
+            X += Math.Min(Math.Max(VelX,maxLeftMovement),maxRightMovement);
+            Y += Math.Min(Math.Max(VelY, maxUpMovement), maxDownMovement);
+        }
+
+        public void UpgradeBoosters()
+        {
+            BoostersLevel = Math.Min(BoostersLevel + 1, MaxBoostersLevel);
+        }
+        public void UpgradeGunsAmount()
+        {
+            GunsAmountLevel = Math.Min(GunsAmountLevel + 1, MaxGunsAmountLevel);
         }
     }
 }

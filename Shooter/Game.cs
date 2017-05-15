@@ -4,32 +4,33 @@ using System.Linq;
 
 namespace Shooter
 {
-    public class Game
+    public class Game : ISizeProvider
     {
-        private readonly Player player;
+        public readonly Player Player;
         private readonly List<Entity> entities;
         public IEnumerable<Entity> GetEntities => entities;
-        private float width;
-        private float height;
-
-        private int shootingDelay;
-        private int currentShootingDelay;
+        public float Width { get; }
+        public float Height { get; }
+        
+        private readonly int playerShootingDelay;
+        private int playerCurrentShootingDelay;
+        private readonly float playerBulletSpeed;
 
         public event Action GameOver;
 
         public int Score { get; private set; }
-        public object Health => player.Health;
 
         public Game(float width, float height)
         {
-            this.width = width;
-            this.height = height;
-
+            Width = width;
+            Height = height;
+            
             entities = new List<Entity>();
-            player = new Player();
-            AddEntity(player);
-            shootingDelay = 20;
-            currentShootingDelay = 0;
+            Player = new Player(this,(int) (width/2)+16,(int)height-64,speed: 5f);
+            AddEntity(Player);
+            playerShootingDelay = 20;
+            playerCurrentShootingDelay = 0;
+            playerBulletSpeed = 20;
         }
 
         public void AddEntity(Entity entity)
@@ -39,7 +40,7 @@ namespace Shooter
 
         public void GameTick()
         {
-            currentShootingDelay = Math.Max(currentShootingDelay - 1, 0);
+            playerCurrentShootingDelay = Math.Max(playerCurrentShootingDelay - 1, 0);
             foreach (var entity in entities)
                 entity.OnEntityTick();
 
@@ -57,40 +58,41 @@ namespace Shooter
         public void SetPlayerGoingLeft(bool isGoingLeft)
         {
             if (isGoingLeft)
-                player.HorizontalMovement = -1;
-            else if (player.HorizontalMovement < 0)
-                player.HorizontalMovement = 0;
+                Player.HorizontalMovement = -1;
+            else if (Player.HorizontalMovement < 0)
+                Player.HorizontalMovement = 0;
         }
 
         public void SetPlayerGoingRight(bool isGoingRight)
         {
             if (isGoingRight)
-                player.HorizontalMovement = 1;
-            else if (player.HorizontalMovement > 0)
-                player.HorizontalMovement = 0;
+                Player.HorizontalMovement = 1;
+            else if (Player.HorizontalMovement > 0)
+                Player.HorizontalMovement = 0;
         }
 
         public void SetPlayerGoingDown(bool isGoingDown)
         {
             if (isGoingDown)
-                player.VerticalMovement = 1;
-            else if (player.VerticalMovement > 0)
-                player.VerticalMovement = 0;
+                Player.VerticalMovement = 1;
+            else if (Player.VerticalMovement > 0)
+                Player.VerticalMovement = 0;
         }
 
         public void SetPlayerGoingUp(bool isGoingUp)
         {
             if (isGoingUp)
-                player.VerticalMovement = -1;
-            else if (player.VerticalMovement < 0)
-                player.VerticalMovement = 0;
+                Player.VerticalMovement = -1;
+            else if (Player.VerticalMovement < 0)
+                Player.VerticalMovement = 0;
         }
 
         public void Fire()
         {
-            if (currentShootingDelay != 0) return;
-            AddEntity(new Bullet(player, player.X, player.Y, 0, -1).SetTargetType(TargetType.Enemy));
-            currentShootingDelay = shootingDelay;
+            if (playerCurrentShootingDelay != 0) return;
+            AddEntity(new Bullet(Player, this,Player.X, Player.Y, Player.VelX, -Player.VelY - playerBulletSpeed)
+                .SetTargetType(TargetType.Enemy));
+            playerCurrentShootingDelay = playerShootingDelay;
         }
 
         private void OnEntityKilled(Entity entity, Entity killer)
@@ -102,9 +104,9 @@ namespace Shooter
             {
                 if (entity == null)
                     return;
-                if (entity == player)
+                if (entity == Player)
                     GameOver?.Invoke();
-                if (killer != null && killer == player)
+                if (killer != null && killer == Player)
                     OnEnemyKilledByPlayer(entity);
             }
         }

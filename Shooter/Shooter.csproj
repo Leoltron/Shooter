@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,16 +48,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackgroundDrawer.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="CollisionBox.cs" />
-    <Compile Include="EnemyDrawer.cs" />
+    <Compile Include="EntityDrawer.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Enemy.cs" />
+    <Compile Include="ICoordinatesProvider.cs" />
+    <Compile Include="ISizeProvider.cs" />
     <Compile Include="IWeapon.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerDrawer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
@@ -77,41 +84,45 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Textures\Player\Player.pdn" />
-    <None Include="Textures\Player\Player_.pdn" />
+    <None Include="Textures\Entities\Player\Player.pdn" />
+    <None Include="Textures\Entities\Player\Player_.pdn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Textures\Enemies\Bagel.png">
+    <Content Include="Icon.ico" />
+    <Content Include="Textures\Entities\Bagel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Boosters_0.png">
+    <Content Include="Textures\Entities\Bullet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Boosters_1.png">
+    <Content Include="Textures\Entities\Player\Boosters_0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Boosters_2.png">
+    <Content Include="Textures\Entities\Player\Boosters_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Boosters_3.png">
+    <Content Include="Textures\Entities\Player\Boosters_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Guns\Basic\0.png">
+    <Content Include="Textures\Entities\Player\Boosters_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Guns\Basic\1.png">
+    <Content Include="Textures\Entities\Player\Guns\Basic\0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Guns\Basic\2.png">
+    <Content Include="Textures\Entities\Player\Guns\Basic\1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Guns\Basic\3.png">
+    <Content Include="Textures\Entities\Player\Guns\Basic\2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\player_base.png">
+    <Content Include="Textures\Entities\Player\Guns\Basic\3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Entities\Player\PlayerBase.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
