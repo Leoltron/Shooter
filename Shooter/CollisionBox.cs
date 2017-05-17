@@ -28,6 +28,16 @@ namespace Shooter
                 throw new ArgumentOutOfRangeException(name, $"{name} must be positive, got {value}");
         }
 
+        public bool CollidesWith(CollisionBox other)
+        {
+            if (other == null)
+                return false;
+            return Left <= other.Right &&
+                   Right >= other.Left &&
+                   Top <= other.Bottom &&
+                   Bottom >= other.Top;
+        }
+
 
     }
 }

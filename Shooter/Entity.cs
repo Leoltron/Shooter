@@ -21,12 +21,17 @@ namespace Shooter
         public bool IsDead { get; protected set; }
 
 
-        public Entity(float x = 0,
+        public Entity(
+            float x = 0,
             float y = 0,
             float velX = 0,
             float velY = 0,
             int health = 1,
-            float direction = 0)
+            float direction = 0,
+            TargetType targetType = TargetType.None,
+            float collisionBoxWidth = -1,
+            float collisionBoxHeight = -1
+            )
         {
             X = x;
             Y = y;
@@ -34,7 +39,10 @@ namespace Shooter
             VelX = velX;
             VelY = velY;
             Health = health;
+            TargetType = targetType;
             IsDead = false;
+            if(collisionBoxWidth > 0 && collisionBoxHeight > 0)
+                CollisionBox = new CollisionBox(this,collisionBoxWidth,collisionBoxHeight);
         }
 
         public virtual void OnEntityTick()
@@ -78,13 +86,7 @@ namespace Shooter
 
         public bool CollidesWith(Entity entity)
         {
-            if (CollisionBox == null || entity.CollisionBox == null)
-                return false;
-
-            return CollisionBox.Left <= entity.CollisionBox.Right &&
-                   CollisionBox.Right >= entity.CollisionBox.Left &&
-                   CollisionBox.Top <= entity.CollisionBox.Bottom &&
-                   CollisionBox.Bottom >= entity.CollisionBox.Top;
+            return CollisionBox != null && CollisionBox.CollidesWith(entity.CollisionBox);
         }
 
         public bool IsTarget(Entity entity)
@@ -113,7 +115,7 @@ namespace Shooter
 
         public override string ToString()
         {
-            return $"{GetType().Name}: X: {X} Y: {Y} VelX: {VelX} VelY: {VelY}";
+            return $"{{{GetType().Name}: X: {X} Y: {Y} VelX: {VelX} VelY: {VelY}}}";
         }
     }
 }
