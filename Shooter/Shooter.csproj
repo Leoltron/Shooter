@@ -48,12 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundDrawer.cs" />
+    <Compile Include="Gui\BackgroundDrawer.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="CollisionBox.cs" />
-    <Compile Include="EntityDrawer.cs" />
+    <Compile Include="Gui\ControlsHelpDrawer.cs" />
+    <Compile Include="Gui\EntityDrawer.cs" />
     <Compile Include="Entity.cs" />
-    <Compile Include="GameForm.cs">
+    <Compile Include="Gui\GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Enemy.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="ISizeProvider.cs" />
     <Compile Include="IWeapon.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerDrawer.cs" />
+    <Compile Include="Gui\PlayerDrawer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
@@ -84,6 +85,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Textures\Controls\Controls.pdn" />
     <None Include="Textures\Entities\Player\Player.pdn" />
     <None Include="Textures\Entities\Player\Player_.pdn" />
   </ItemGroup>
@@ -92,6 +94,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <Content Include="Textures\Controls\A.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\D.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\Down.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\Left.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\Right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\S.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\Up.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Controls\W.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\Entities\Bagel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
