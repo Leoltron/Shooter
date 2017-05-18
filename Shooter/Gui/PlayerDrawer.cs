@@ -3,36 +3,39 @@ using System.IO;
 
 namespace Shooter.Gui
 {
-    class PlayerDrawer
+    static class PlayerDrawer
     {
-        private readonly Bitmap playerBaseBitmap;
-        private readonly Bitmap[] boostersBitmaps;
-        private readonly Bitmap[] gunsBitmaps;
+        private static readonly Bitmap PlayerBaseBitmap;
+        private static readonly Bitmap[] BoostersBitmaps;
+        private static readonly Bitmap[] GunsBitmaps;
 
-        public PlayerDrawer()
+        static PlayerDrawer()
         {
             var imagesDirectory = new DirectoryInfo("Textures\\Entities\\Player\\");
             var playerImagesDirectoryFullName = imagesDirectory.FullName;
-            playerBaseBitmap = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + "PlayerBase.png");
-            boostersBitmaps = new Bitmap[Player.MaxBoostersLevel];
-            for (var i = 0; i < boostersBitmaps.Length; i++)
-                boostersBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Boosters_{i}.png");
-            gunsBitmaps = new Bitmap[Player.MaxGunsAmountLevel];
-            for (var i = 0; i < gunsBitmaps.Length; i++)
-                gunsBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Guns\\Basic\\{i}.png");
+            PlayerBaseBitmap = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + "PlayerBase.png");
+            BoostersBitmaps = new Bitmap[Player.MaxBoostersLevel];
+            for (var i = 0; i < BoostersBitmaps.Length; i++)
+                BoostersBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Boosters_{i}.png");
+            GunsBitmaps = new Bitmap[Player.MaxGunsAmountLevel];
+            for (var i = 0; i < GunsBitmaps.Length; i++)
+                GunsBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Guns\\Basic\\{i}.png");
         }
 
-        public void DrawPlayer(Player player, Graphics graphics, bool isDebugMode = false)
+        public static void DrawEntity(Graphics graphics, Entity entity, bool isDebugMode = false)
         {
+            var player = entity as Player;
+            if(player == null)
+                return;
             graphics.TranslateTransform(player.X, player.Y);
             graphics.RotateTransform(player.Direction);
-            var x = -playerBaseBitmap.Width / 2;
-            var y = -playerBaseBitmap.Height / 2;
-            graphics.DrawImage(playerBaseBitmap, x, y);
-            graphics.DrawImage(boostersBitmaps[player.BoostersLevel], x, y);
-            graphics.DrawImage(gunsBitmaps[player.GunsAmountLevel], x, y);
+            var x = -PlayerBaseBitmap.Width / 2;
+            var y = -PlayerBaseBitmap.Height / 2;
+            graphics.DrawImage(PlayerBaseBitmap, x, y);
+            graphics.DrawImage(BoostersBitmaps[player.BoostersLevel], x, y);
+            graphics.DrawImage(GunsBitmaps[player.GunsAmountLevel], x, y);
             if (isDebugMode)
-                EntityDrawer.DrawCollisionBox(graphics, player);
+                SingleTextureEntityDrawer.DrawCollisionBox(graphics, player);
 
             graphics.RotateTransform(-player.Direction);
             graphics.TranslateTransform(-player.X, -player.Y);

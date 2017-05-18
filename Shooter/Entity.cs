@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Deployment.Application;
+using System.Drawing;
 
 namespace Shooter
 {
@@ -108,9 +109,9 @@ namespace Shooter
             }
         }
 
-        public virtual String GetTextureFileName()
+        public virtual Action<Graphics,Entity,bool> GetDrawingAction()
         {
-            return "";
+            return null;
         }
 
         public override string ToString()

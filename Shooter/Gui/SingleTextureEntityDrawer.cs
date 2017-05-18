@@ -4,26 +4,28 @@ using System.IO;
 
 namespace Shooter.Gui
 {
-    public class EntityDrawer
+    public static class SingleTextureEntityDrawer
     {
-        private readonly Dictionary<string, Bitmap> bitmaps;
+        private static readonly Dictionary<string, Bitmap> Bitmaps;
 
-        public EntityDrawer()
+        static SingleTextureEntityDrawer()
         {
-            bitmaps = new Dictionary<string, Bitmap>();
+            Bitmaps = new Dictionary<string, Bitmap>();
             var imagesDirectory = new DirectoryInfo("Textures/Entities");
             foreach (var fileInfo in imagesDirectory.GetFiles("*.png"))
-                bitmaps[fileInfo.Name] = (Bitmap) Image.FromFile(fileInfo.FullName);
+                Bitmaps[fileInfo.Name] = (Bitmap) Image.FromFile(fileInfo.FullName);
         }
 
-        public void DrawEntity(Graphics graphics, Entity entity, bool isDebugMode = false)
+        public static void DrawEntity(Graphics graphics, Entity entity, bool isDebugMode = false)
         {
+            var texture = entity as ISingleTexture;
+            if (texture == null) return;
             graphics.TranslateTransform(entity.X, entity.Y);
             graphics.RotateTransform(entity.Direction);
 
-            if (bitmaps.ContainsKey(entity.GetTextureFileName()))
+            if (Bitmaps.ContainsKey(texture.GetTextureFileName()))
             {
-                var bitmap = bitmaps[entity.GetTextureFileName()];
+                var bitmap = Bitmaps[texture.GetTextureFileName()];
                 graphics.DrawImage(bitmap, -bitmap.Width / 2, -bitmap.Height / 2);
             }
             if (isDebugMode)

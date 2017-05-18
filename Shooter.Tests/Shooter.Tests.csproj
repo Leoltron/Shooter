@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="BulletTests.cs" />
     <Compile Include="CollisionBoxTests.cs" />
+    <Compile Include="DummySizeProvider.cs" />
+    <Compile Include="EnemyTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="GameTests.cs" />
     <Compile Include="PlayerTests.cs" />
@@ -55,6 +57,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shooter\Shooter.csproj">

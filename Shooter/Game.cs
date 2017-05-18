@@ -6,12 +6,14 @@ namespace Shooter
 {
     public class Game : ISizeProvider
     {
+        public const float PlayerSpeed = 5;
+
         public readonly Player Player;
         private readonly List<Entity> entities;
         public IEnumerable<Entity> GetEntities => entities;
         public float Width { get; }
         public float Height { get; }
-        
+
         private readonly int playerShootingDelay;
         private int playerCurrentShootingDelay;
         private readonly float playerBulletSpeed;
@@ -24,9 +26,9 @@ namespace Shooter
         {
             Width = width;
             Height = height;
-            
+
             entities = new List<Entity>();
-            Player = new Player(this,(int) (width/2)+16,(int)height-64,speed: 5f);
+            Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed);
             AddEntity(Player);
             playerShootingDelay = 20;
             playerCurrentShootingDelay = 0;
@@ -90,20 +92,21 @@ namespace Shooter
         public void Fire()
         {
             if (playerCurrentShootingDelay != 0) return;
-            AddEntity(new Bullet(Player, this,Player.X, Player.Y, Player.VelX, -Player.VelY - playerBulletSpeed)
-                .SetTargetType(TargetType.Enemy));
+            AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                Player.X,
+                Player.Y,
+                Player.VelX,
+                -Player.VelY - playerBulletSpeed));
             playerCurrentShootingDelay = playerShootingDelay;
         }
 
         private void OnEntityKilled(Entity entity, Entity killer)
         {
-            var killerWeapon = killer as IWeapon;
+            var killerWeapon = killer as Bullet;
             if (killerWeapon != null)
                 OnEntityKilled(entity, killerWeapon.Source);
             else
             {
-                if (entity == null)
-                    return;
                 if (entity == Player)
                     GameOver?.Invoke();
                 if (killer != null && killer == Player)

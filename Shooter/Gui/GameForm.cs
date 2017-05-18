@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -11,25 +12,11 @@ namespace Shooter.Gui
         private bool wasdKeyLastPressed;
         private bool debugMode;
 
-        private readonly EntityDrawer entityDrawer;
-        private readonly PlayerDrawer playerDrawer;
         private ControlsHelpDrawer controlsHelpDrawer;
-
         private BackgroundDrawer bgDrawer;
-
-        //private Button btn;
 
         public GameForm()
         {
-            /*btn = new Button();
-            btn.Size = new Size(ClientSize.Width, ClientSize.Height);
-            btn.Click += (s, a) =>
-            {
-                n = !n;
-                FormBorderStyle = n ? FormBorderStyle.None : FormBorderStyle.Sizable;
-                MaximizeBox = !n;
-            };
-            Controls.Add(btn);*/
             Text = "Shooter";
             DoubleBuffered = true;
             MinimumSize = new Size(400, 400);
@@ -42,8 +29,6 @@ namespace Shooter.Gui
                     HandleMoveKey(keyArgs.KeyCode, true);
             };
             KeyUp += (sender, keyArgs) => HandleMoveKey(keyArgs.KeyCode, false);
-            entityDrawer = new EntityDrawer();
-            playerDrawer = new PlayerDrawer();
             StartNewGame();
         }
 
@@ -148,10 +133,7 @@ namespace Shooter.Gui
         private void DrawGameEntities(Graphics graphics)
         {
             foreach (var entity in game.GetEntities)
-                if (entity is Player)
-                    playerDrawer.DrawPlayer((Player) entity, graphics, debugMode);
-                else
-                    entityDrawer.DrawEntity(graphics, entity, debugMode);
+                entity.GetDrawingAction()?.Invoke(graphics, entity, debugMode);
         }
 
         private void DrawPauseScreen(Graphics graphics)

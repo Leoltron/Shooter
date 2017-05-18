@@ -70,11 +70,11 @@ namespace Shooter.Tests
             }
             Assert.AreEqual(Player.MaxGunsAmountLevel, player.GunsAmountLevel);
         }
-    }
 
-    class DummySizeProvider : ISizeProvider
-    {
-        public float Width { get; set; }
-        public float Height { get; set; }
+        [Test]
+        public void TestGetRenderAction()
+        {
+            var action = new Player(null).GetDrawingAction();
+        }
     }
 }

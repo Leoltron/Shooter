@@ -14,11 +14,11 @@ namespace Shooter.Gui
         private readonly Dictionary<Keys, Bitmap> keysBitmaps;
         private readonly Keys[] wasdControls = {Keys.W, Keys.A, Keys.S, Keys.D};
         private readonly Keys[] arrowControls = {Keys.Up, Keys.Left, Keys.Down, Keys.Right};
-        private int TimeRemain;
+        private int timeRemain;
 
         public ControlsHelpDrawer(int showTime)
         {
-            TimeRemain = showTime;
+            timeRemain = showTime;
             keysBitmaps = new Dictionary<Keys, Bitmap>();
             var imagesDirectory = new DirectoryInfo("Textures\\Controls\\");
             foreach (var key in wasdControls.Concat(arrowControls))
@@ -27,12 +27,26 @@ namespace Shooter.Gui
 
         public void DecreaseTime(int dtime)
         {
-            TimeRemain -= dtime;
+            timeRemain -= dtime;
         }
 
         public void DrawControlsHelp(Graphics graphics, Player player, bool wasdButtonLastPushed)
         {
-            if (TimeRemain <= 0) return;
+            if (timeRemain <= 0) return;
+            const float textBoxHeight = 20;
+            const float textBoxWidth = 256;
+            graphics.DrawString("Пробел - стрельба", new Font("Courier", 16),
+                new SolidBrush(Color.FromArgb(56, 228, 255)),
+                new RectangleF(player.X - textBoxWidth / 2,
+                    player.CollisionBox.Top - 64 - textBoxHeight,
+                    textBoxWidth,
+                    textBoxHeight),
+                new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Near
+                }
+            );
             var controls = wasdButtonLastPushed ? wasdControls : arrowControls;
             var upBitmap = keysBitmaps[controls[0]];
             graphics.DrawImage(upBitmap,
@@ -45,7 +59,7 @@ namespace Shooter.Gui
             var leftBitmap = keysBitmaps[controls[1]];
             graphics.DrawImage(leftBitmap,
                 new PointF(
-                    player.CollisionBox.Left- leftBitmap.Width,
+                    player.CollisionBox.Left - leftBitmap.Width,
                     player.CollisionBox.Top
                 )
             );

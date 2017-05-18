@@ -52,13 +52,14 @@
     <Compile Include="Bullet.cs" />
     <Compile Include="CollisionBox.cs" />
     <Compile Include="Gui\ControlsHelpDrawer.cs" />
-    <Compile Include="Gui\EntityDrawer.cs" />
+    <Compile Include="Gui\SingleTextureEntityDrawer.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Gui\GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Enemy.cs" />
     <Compile Include="ICoordinatesProvider.cs" />
+    <Compile Include="ISingleTexture.cs" />
     <Compile Include="ISizeProvider.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Gui\PlayerDrawer.cs" />

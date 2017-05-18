@@ -126,11 +126,6 @@ namespace Shooter.Tests
             Assert.AreEqual(Math.PI / 4 * 3, entity.Direction, 1e-5);
         }
 
-        public static bool IsEmptyOrIsATextureNameString(String s)
-        {
-            return string.IsNullOrEmpty(s) || s.ToLower().EndsWith(".png");
-        }
-
         [Test]
         public void TestCollidesWith()
         {
@@ -173,10 +168,10 @@ namespace Shooter.Tests
         }
 
         [Test]
-        public void TestGetTextureName()
+        public void TestGetRenderAction()
         {
             var entity = new Entity();
-            Assert.IsTrue(IsEmptyOrIsATextureNameString(entity.GetTextureFileName()));
+            var renderAction = entity.GetDrawingAction();
         }
 
         [Test]

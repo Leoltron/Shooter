@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using Shooter.Gui;
 
 namespace Shooter
 {
@@ -83,6 +85,11 @@ namespace Shooter
         public void UpgradeGunsAmount()
         {
             GunsAmountLevel = Math.Min(GunsAmountLevel + 1, MaxGunsAmountLevel);
+        }
+
+        public override Action<Graphics, Entity, bool> GetDrawingAction()
+        {
+            return PlayerDrawer.DrawEntity;
         }
     }
 }
