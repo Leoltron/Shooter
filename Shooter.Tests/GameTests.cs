@@ -140,7 +140,7 @@ namespace Shooter.Tests
         {
             var game = new Game(100, 100);
             var prevScore = game.Score;
-            var enemy = new Enemy(50, 50, 0, 0, 1, 0, 50, 50);
+            var enemy = new BagelEnemy(BagelType.Basic,null,null,50, 50, 0, 0, 1, 0);
             var bullet = new Bullet(game.Player, game, TargetType.Enemy, 50, 50, 0, 0, 0, 1, 1);
             game.AddEntity(enemy);
             game.AddEntity(bullet);

@@ -32,7 +32,7 @@ namespace Shooter
             addingQueue = new Queue<Entity>();
             Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed, health: 3);
             AddEntity(Player);
-            AddEntity(new BagelEnemy(BagelType.InvincibleClone, this, this, (width / 2) + 16, 64, health: 10));
+            //AddEntity(new BagelEnemy(BagelType.Bouncing, this, this, (width / 2) + 16, 64,5,5, health: 10));
         }
 
         public void AddEntity(Entity entity)

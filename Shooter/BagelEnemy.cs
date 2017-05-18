@@ -21,7 +21,7 @@ namespace Shooter
         private readonly IEntityAdder entityAdder;
         private static readonly float[] HealthBagelCollisionBoxWidth = {24, 40, 48, 58};
         private static readonly float[] HealthBagelCollisionBoxHeight = {24, 40, 48, 58};
-        private const int ShootingInterval = 20;
+        public const int ShootingInterval = 20;
         private const float ShotSpeed = 5;
         private int shootingDelay;
         private readonly Random rand;
@@ -140,25 +140,23 @@ namespace Shooter
 
         public override void Move()
         {
-            if (BagelType == BagelType.Bouncing)
+            var newX = X + VelX;
+            var newY = Y + VelY;
+            if ((newX - CollisionBox.Width / 2 < 0 || newX + CollisionBox.Width / 2 > sizeProvider.Width) &&
+                !(CollisionBox.Left < 0 || CollisionBox.Right > sizeProvider.Width))
             {
-                var newX = X + VelX;
-                var newY = Y + VelY;
-                if ((newX < 0 || newX > sizeProvider.Width) && !(X < 0 || X > sizeProvider.Width))
-                {
-                    if (BagelType == BagelType.Bouncing)
-
-                        VelX *= -1;
-                    else
-                        SetDead(null);
-                }
-                if ((newY < 0 || newY > sizeProvider.Height) && !(Y < 0 || Y > sizeProvider.Height))
-                {
-                    if (BagelType == BagelType.Bouncing)
-                        VelY *= -1;
-                    else
-                        SetDead(null);
-                }
+                if (BagelType == BagelType.Bouncing)
+                    VelX *= -1;
+                else
+                    SetDead(null);
+            }
+            if ((newY - CollisionBox.Height / 2 < 0 || newY + CollisionBox.Height / 2 > sizeProvider.Height)
+                && !(CollisionBox.Top < 0 || CollisionBox.Bottom > sizeProvider.Height))
+            {
+                if (BagelType == BagelType.Bouncing)
+                    VelY *= -1;
+                else
+                    SetDead(null);
             }
             base.Move();
         }
