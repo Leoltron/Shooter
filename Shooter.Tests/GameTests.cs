@@ -20,6 +20,7 @@ namespace Shooter.Tests
         public void TestHavePlayer()
         {
             var game = new Game(100, 100);
+            game.GameTick();
             Assert.AreEqual(1, game.GetEntities.Count(e => e is Player));
         }
 
@@ -29,6 +30,7 @@ namespace Shooter.Tests
             var game = new Game(100, 100);
             for (var i = 0; i < 4; i++)
                 game.AddEntity(new Enemy());
+            game.GameTick();
             Assert.AreEqual(4, game.GetEntities.Count(e => e is Enemy));
         }
 
@@ -100,6 +102,7 @@ namespace Shooter.Tests
         public void TestRemovingDead()
         {
             var game = new Game(100, 100);
+            game.GameTick();
             Assert.AreEqual(1, game.GetEntities.Count());
             game.Player.SetDead(null);
             game.GameTick();
@@ -111,6 +114,7 @@ namespace Shooter.Tests
                 enemies.Add(e);
                 game.AddEntity(e);
             }
+            game.GameTick();
             Assert.AreEqual(4, game.GetEntities.Count());
             foreach (var entity in enemies)
                 entity.SetDead(null);
@@ -149,6 +153,7 @@ namespace Shooter.Tests
         {
             var game = new Game(100, 100);
             game.Fire();
+            game.GameTick();
             Assert.AreEqual(2, game.GetEntities.Count());
         }
 
@@ -158,6 +163,7 @@ namespace Shooter.Tests
             var game = new Game(100, 100);
             game.Fire();
             game.Fire();
+            game.GameTick();
             Assert.AreEqual(2, game.GetEntities.Count());
         }
     }

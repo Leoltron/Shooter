@@ -25,12 +25,12 @@ namespace Shooter.Tests
         [Test]
         public void TestMoving()
         {
-            var player = new Player(new DummySizeProvider {Height = 100,Width = 100},50,50, speed: 5f);
+            var player = new Player(new DummySizeProvider {Height = 100, Width = 100}, 50, 50, speed: 5f);
             player.HorizontalMovement = 1;
             player.Move();
 
-            Assert.AreEqual(55,player.X,1e-5);
-            Assert.AreEqual(50,player.Y,1e-5);
+            Assert.AreEqual(55, player.X, 1e-5);
+            Assert.AreEqual(50, player.Y, 1e-5);
 
 
             player.VerticalMovement = -2;
@@ -44,7 +44,7 @@ namespace Shooter.Tests
         [Test]
         public void TestMovingInsideBox()
         {
-            var player = new Player(new DummySizeProvider { Height = 100, Width = 100 }, 50, 50, speed: 10f);
+            var player = new Player(new DummySizeProvider {Height = 100, Width = 100}, 50, 50, speed: 10f);
             player.HorizontalMovement = 1000;
             player.Move();
             Assert.IsTrue(player.X <= 100);
@@ -75,6 +75,20 @@ namespace Shooter.Tests
         public void TestGetRenderAction()
         {
             var action = new Player(null).GetDrawingAction();
+        }
+
+        [Test]
+        public void TestPlayerInvincibility()
+        {
+            var player = new Player(new DummySizeProvider(), health: 5);
+            player.DamageEntity(null, 1);
+            Assert.AreEqual(4, player.Health);
+            player.DamageEntity(null, 1);
+            Assert.AreEqual(4, player.Health);
+            for (var i = 0; i < Player.MaxInvincibilityTime; i++)
+                player.OnEntityTick();
+            player.DamageEntity(null, 1);
+            Assert.AreEqual(3, player.Health);
         }
     }
 }
