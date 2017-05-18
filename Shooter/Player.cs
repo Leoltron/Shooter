@@ -15,6 +15,9 @@ namespace Shooter
         public int GunsAmountLevel { get; private set; }
         public const int MaxGunsAmountLevel = 3;
 
+        public int InvincibilityTime { get; private set; }
+        public const int MaxInvincibilityTime = 80;
+
         public Player(
             ISizeProvider sizeProvider,
             int x = 0,
@@ -31,7 +34,7 @@ namespace Shooter
             verticalMovement = 0;
             horizontalMovement = 0;
             TargetType = TargetType.None;
-            CollisionBox = new CollisionBox(this,64,64);
+            CollisionBox = new CollisionBox(this, 64, 64);
         }
 
         private int verticalMovement;
@@ -68,13 +71,27 @@ namespace Shooter
             VelY = VerticalMovement * SpeedMultiplier * speed;
         }
 
+        public override void OnEntityTick()
+        {
+            base.OnEntityTick();
+            if (InvincibilityTime > 0)
+                InvincibilityTime--;
+        }
+
+        public override void DamageEntity(Entity source, int damage)
+        {
+            if (InvincibilityTime > 0) return;
+            base.DamageEntity(source, damage);
+            InvincibilityTime = MaxInvincibilityTime;
+        }
+
         public override void Move()
         {
             var maxLeftMovement = -CollisionBox.Left;
-            var maxRightMovement = sizeProvider.Width- CollisionBox.Right;
+            var maxRightMovement = sizeProvider.Width - CollisionBox.Right;
             var maxUpMovement = -CollisionBox.Top;
             var maxDownMovement = sizeProvider.Height - CollisionBox.Bottom;
-            X += Math.Min(Math.Max(VelX,maxLeftMovement),maxRightMovement);
+            X += Math.Min(Math.Max(VelX, maxLeftMovement), maxRightMovement);
             Y += Math.Min(Math.Max(VelY, maxUpMovement), maxDownMovement);
         }
 
@@ -82,6 +99,7 @@ namespace Shooter
         {
             BoostersLevel = Math.Min(BoostersLevel + 1, MaxBoostersLevel);
         }
+
         public void UpgradeGunsAmount()
         {
             GunsAmountLevel = Math.Min(GunsAmountLevel + 1, MaxGunsAmountLevel);
@@ -89,7 +107,7 @@ namespace Shooter
 
         public override Action<Graphics, Entity, bool> GetDrawingAction()
         {
-            return PlayerDrawer.DrawEntity;
+            return PlayerDrawer.DrawPlayer;
         }
     }
 }

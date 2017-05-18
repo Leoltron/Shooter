@@ -22,10 +22,10 @@ namespace Shooter.Gui
                 GunsBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Guns\\Basic\\{i}.png");
         }
 
-        public static void DrawEntity(Graphics graphics, Entity entity, bool isDebugMode = false)
+        public static void DrawPlayer(Graphics graphics, Entity entity, bool isDebugMode = false)
         {
             var player = entity as Player;
-            if(player == null)
+            if(player == null || player.InvincibilityTime % 2 != 0)
                 return;
             graphics.TranslateTransform(player.X, player.Y);
             graphics.RotateTransform(player.Direction);
@@ -35,7 +35,7 @@ namespace Shooter.Gui
             graphics.DrawImage(BoostersBitmaps[player.BoostersLevel], x, y);
             graphics.DrawImage(GunsBitmaps[player.GunsAmountLevel], x, y);
             if (isDebugMode)
-                SingleTextureEntityDrawer.DrawCollisionBox(graphics, player);
+                DrawUtils.DrawCollisionBox(graphics, player);
 
             graphics.RotateTransform(-player.Direction);
             graphics.TranslateTransform(-player.X, -player.Y);

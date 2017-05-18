@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Deployment.Application;
 using System.Drawing;
 
 namespace Shooter
@@ -19,7 +18,7 @@ namespace Shooter
         public float VelX { get; protected set; }
         public float VelY { get; protected set; }
 
-        public bool IsDead { get; protected set; }
+        public bool IsDead { get; private set; }
 
 
         public Entity(
@@ -60,7 +59,7 @@ namespace Shooter
             Y += VelY;
         }
 
-        public void DamageEntity(Entity source, int damage)
+        public virtual void DamageEntity(Entity source, int damage)
         {
             if (!IsDead)
             {

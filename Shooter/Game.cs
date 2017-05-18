@@ -4,19 +4,20 @@ using System.Linq;
 
 namespace Shooter
 {
-    public class Game : ISizeProvider
+    public class Game : ISizeProvider, IEntityAdder
     {
         public const float PlayerSpeed = 5;
 
         public readonly Player Player;
         private readonly List<Entity> entities;
+        private readonly Queue<Entity> addingQueue;
         public IEnumerable<Entity> GetEntities => entities;
         public float Width { get; }
         public float Height { get; }
 
-        private readonly int playerShootingDelay;
+        private const int PlayerShootingDelay = 20;
         private int playerCurrentShootingDelay;
-        private readonly float playerBulletSpeed;
+        private const float PlayerBulletSpeed = 20;
 
         public event Action GameOver;
 
@@ -28,20 +29,21 @@ namespace Shooter
             Height = height;
 
             entities = new List<Entity>();
-            Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed);
+            addingQueue = new Queue<Entity>();
+            Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed, health: 3);
             AddEntity(Player);
-            playerShootingDelay = 20;
-            playerCurrentShootingDelay = 0;
-            playerBulletSpeed = 20;
+            AddEntity(new BagelEnemy(BagelType.InvincibleClone, this, this, (width / 2) + 16, 64, health: 10));
         }
 
         public void AddEntity(Entity entity)
         {
-            entities.Add(entity);
+            addingQueue.Enqueue(entity);
         }
 
         public void GameTick()
         {
+            while (addingQueue.Count > 0)
+                entities.Add(addingQueue.Dequeue());
             playerCurrentShootingDelay = Math.Max(playerCurrentShootingDelay - 1, 0);
             foreach (var entity in entities)
                 entity.OnEntityTick();
@@ -96,8 +98,8 @@ namespace Shooter
                 Player.X,
                 Player.Y,
                 Player.VelX,
-                -Player.VelY - playerBulletSpeed));
-            playerCurrentShootingDelay = playerShootingDelay;
+                -Player.VelY - PlayerBulletSpeed));
+            playerCurrentShootingDelay = PlayerShootingDelay;
         }
 
         private void OnEntityKilled(Entity entity, Entity killer)
@@ -116,7 +118,29 @@ namespace Shooter
 
         private void OnEnemyKilledByPlayer(Entity enemy)
         {
-            Score++;
+            Score += GetPointsAddingByKilling(enemy);
+        }
+
+        private int GetPointsAddingByKilling(Entity enemy)
+        {
+            var bagelEnemy = enemy as BagelEnemy;
+            if (bagelEnemy != null)
+            {
+                switch (bagelEnemy.BagelType)
+                {
+                    case BagelType.Basic:
+                    case BagelType.Clone:
+                        return 1;
+                    case BagelType.Bouncing:
+                    case BagelType.Shooting:
+                        return 5;
+                    case BagelType.Healing:
+                        return 0;
+                    case BagelType.InvincibleClone:
+                        return 25;
+                }
+            }
+            return 0;
         }
     }
 }

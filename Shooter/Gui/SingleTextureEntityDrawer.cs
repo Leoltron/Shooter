@@ -26,31 +26,13 @@ namespace Shooter.Gui
             if (Bitmaps.ContainsKey(texture.GetTextureFileName()))
             {
                 var bitmap = Bitmaps[texture.GetTextureFileName()];
-                graphics.DrawImage(bitmap, -bitmap.Width / 2, -bitmap.Height / 2);
+                DrawUtils.DrawCenteredBitmap(graphics, bitmap);
             }
             if (isDebugMode)
-                DrawCollisionBox(graphics, entity);
+                DrawUtils.DrawCollisionBox(graphics, entity);
 
             graphics.RotateTransform(-entity.Direction);
             graphics.TranslateTransform(-entity.X, -entity.Y);
-        }
-
-        internal static void DrawCollisionBox(Graphics graphics, Entity entity)
-        {
-            Rectangle rect;
-            Pen pen;
-            if (entity.CollisionBox == null)
-            {
-                rect = new Rectangle(-32, -32, 64, 64);
-                pen = entity is Player ? Pens.GreenYellow : Pens.Pink;
-            }
-            else
-            {
-                var cb = entity.CollisionBox;
-                rect = new Rectangle(-(int) (cb.Width / 2), -(int) (cb.Height / 2), (int) cb.Width, (int) cb.Height);
-                pen = entity is Player ? Pens.GreenYellow : Pens.Pink;
-            }
-            graphics.DrawRectangle(pen, rect);
         }
     }
 }
