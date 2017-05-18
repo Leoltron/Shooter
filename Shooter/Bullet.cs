@@ -2,11 +2,11 @@
 
 namespace Shooter
 {
-    class Bullet : Entity, IWeapon
+    class Bullet : Entity
     {
-        private readonly Entity source;
-        private ISizeProvider sizeProvider;
-        public int Damage { get; private set; }
+        private readonly ISizeProvider sizeProvider;
+        private int Damage { get; }
+        public Entity Source { get; }
 
         public Bullet(
             Entity source,
@@ -21,7 +21,7 @@ namespace Shooter
             int howManyCanDamage = 1) : base(x, y, velX, velY, health, direction)
         {
             this.sizeProvider = sizeProvider;
-            this.source = source;
+            this.Source = source;
             AlignDirectionByVelocity();
 
             Damage = damage;
@@ -36,11 +36,6 @@ namespace Shooter
             if (Damage == 0 || targetEntity.IsDead) return;
             targetEntity.DamageEntity(this, Damage);
             DamageEntity(targetEntity, 1);
-        }
-
-        public Entity GetSource()
-        {
-            return source;
         }
 
         public Bullet SetTargetType(TargetType targetType)

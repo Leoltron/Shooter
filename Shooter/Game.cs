@@ -99,7 +99,7 @@ namespace Shooter
         {
             var killerWeapon = killer as IWeapon;
             if (killerWeapon != null)
-                OnEntityKilled(entity, killerWeapon.GetSource());
+                OnEntityKilled(entity, killerWeapon.Source);
             else
             {
                 if (entity == null)

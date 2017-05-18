@@ -60,7 +60,6 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="ICoordinatesProvider.cs" />
     <Compile Include="ISizeProvider.cs" />
-    <Compile Include="IWeapon.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Gui\PlayerDrawer.cs" />
     <Compile Include="Program.cs" />

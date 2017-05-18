@@ -99,7 +99,7 @@ namespace Shooter
                     return entity is Enemy;
                 case TargetType.EnemyBullets:
                     var s = entity as Bullet;
-                    var source = s?.GetSource();
+                    var source = s?.Source;
                     return source is Enemy;
                 case TargetType.Player:
                     return entity is Player;
