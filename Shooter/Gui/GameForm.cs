@@ -11,6 +11,7 @@ namespace Shooter.Gui
         private Timer gameTimer;
         private bool wasdKeyLastPressed;
         private bool debugMode;
+        private bool isGameActive;
 
         private ControlsHelpDrawer controlsHelpDrawer;
         private BackgroundDrawer bgDrawer;
@@ -38,7 +39,9 @@ namespace Shooter.Gui
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             gameTimer?.Stop();
+            isGameActive = true;
             game = new Game(ClientSize.Width, ClientSize.Height);
+            game.GameOver += () => isGameActive = false;
             bgDrawer = new BackgroundDrawer(ClientSize.Width, ClientSize.Height);
             controlsHelpDrawer = new ControlsHelpDrawer(5000);
             gameTimer = new Timer {Interval = 10};
@@ -123,11 +126,30 @@ namespace Shooter.Gui
         {
             base.OnPaint(eventArgs);
             var graphics = eventArgs.Graphics;
-            DrawGameEntities(graphics);
-            controlsHelpDrawer.DrawControlsHelp(graphics, game.Player, wasdKeyLastPressed);
-            DrawGuiOverlay(graphics);
-            if (gameTimer != null && !gameTimer.Enabled)
-                DrawPauseScreen(graphics);
+            if (isGameActive)
+            {
+                DrawGameEntities(graphics);
+                controlsHelpDrawer.DrawControlsHelp(graphics, game.Player, wasdKeyLastPressed);
+                DrawGuiOverlay(graphics);
+                if (gameTimer != null && !gameTimer.Enabled)
+                    DrawPauseScreen(graphics);
+            }
+            else
+                DrawGameOverScreen(graphics);
+        }
+
+        private void DrawGameOverScreen(Graphics graphics)
+        {
+            graphics.DrawString(
+                $"Игра окончена. Очки: {game.Score}",
+                new Font("Courier", 16),
+                Brushes.White,
+                new Rectangle(new Point(0, 0), ClientSize),
+                new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                });
         }
 
         private void DrawGameEntities(Graphics graphics)

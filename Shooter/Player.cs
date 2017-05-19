@@ -8,7 +8,7 @@ namespace Shooter
     {
         private readonly float speed;
         private readonly ISizeProvider sizeProvider;
-        public float SpeedMultiplier = 1;
+        private float SpeedMultiplier = 1;
 
         public int BoostersLevel { get; private set; }
         public const int MaxBoostersLevel = 3;
