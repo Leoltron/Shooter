@@ -8,6 +8,8 @@ namespace Shooter
     {
         public const float PlayerSpeed = 5;
 
+        private EnemyGenerator enemyGenerator;
+
         public readonly Player Player;
         private readonly List<Entity> entities;
         private readonly Queue<Entity> addingQueue;
@@ -23,15 +25,17 @@ namespace Shooter
 
         public int Score { get; private set; }
 
-        public Game(float width, float height)
+        public Game(float width, float height, bool generatorEnabled = false)
         {
             Width = width;
             Height = height;
 
             entities = new List<Entity>();
             addingQueue = new Queue<Entity>();
-            Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed, health: 3);
+            Player = new Player(this, (int) (width / 2) + 16, (int) height - 64, speed: PlayerSpeed, health: 10);
             AddEntity(Player);
+            if (generatorEnabled)
+                enemyGenerator = new EnemyGenerator(this, this);
             //AddEntity(new BagelEnemy(BagelType.Bouncing, this, this, (width / 2) + 16, 64,5,5, health: 10));
         }
 
@@ -57,6 +61,8 @@ namespace Shooter
                 OnEntityKilled(entity, entity.DeathSource);
 
             entities.RemoveAll(e => e.IsDead);
+            if (entities.Count(entity => entity is Enemy) == 0)
+                enemyGenerator?.GenerateNewEnemies();
         }
 
         public void SetPlayerGoingLeft(bool isGoingLeft)
@@ -99,6 +105,46 @@ namespace Shooter
                 Player.Y,
                 Player.VelX,
                 -Player.VelY - PlayerBulletSpeed));
+            var l = Player.GunsAmountLevel;
+            if (l >= 3)
+            {
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X + 50,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X - 50,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+            }
+            if (l >= 2)
+            {
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X - 30,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X + 30,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+            }
+            if (l >= 1)
+            {
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X + 10,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+                AddEntity(new Bullet(Player, this, TargetType.Enemy,
+                    Player.X - 10,
+                    Player.Y,
+                    Player.VelX,
+                    -Player.VelY - PlayerBulletSpeed));
+            }
             playerCurrentShootingDelay = PlayerShootingDelay;
         }
 
@@ -119,6 +165,17 @@ namespace Shooter
         private void OnEnemyKilledByPlayer(Entity enemy)
         {
             Score += GetPointsAddingByKilling(enemy);
+            var upgradesAquired = Player.BoostersLevel + Player.GunsAmountLevel;
+            if (upgradesAquired != Player.MaxBoostersLevel + Player.MaxGunsAmountLevel)
+            {
+                if ((upgradesAquired+1) * 25 < Score)
+                {
+                    if (upgradesAquired % 2 == 0)
+                        Player.UpgradeGunsAmount();
+                    else
+                        Player.UpgradeBoosters();
+                }
+            }
         }
 
         private int GetPointsAddingByKilling(Entity enemy)

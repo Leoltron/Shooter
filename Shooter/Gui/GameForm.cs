@@ -40,7 +40,7 @@ namespace Shooter.Gui
             MaximizeBox = false;
             gameTimer?.Stop();
             isGameActive = true;
-            game = new Game(ClientSize.Width, ClientSize.Height);
+            game = new Game(ClientSize.Width, ClientSize.Height,true);
             game.GameOver += () => isGameActive = false;
             bgDrawer = new BackgroundDrawer(ClientSize.Width, ClientSize.Height);
             controlsHelpDrawer = new ControlsHelpDrawer(5000);

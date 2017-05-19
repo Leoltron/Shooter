@@ -59,7 +59,10 @@ namespace Shooter
         public override void OnCollideWithTarget(Entity targetEntity)
         {
             if (BagelType == BagelType.Healing && Health == 1)
+            {
                 targetEntity.DamageEntity(this, -1);
+                SetDead(null);
+            }
             else
                 base.OnCollideWithTarget(targetEntity);
         }
@@ -82,11 +85,11 @@ namespace Shooter
                 case BagelType.Shooting:
                     entityAdder.AddEntity(
                         new BagelEnemy(BagelType.Clone,
-                            null,
+                            sizeProvider,
                             entityAdder,
                             X, Y,
                             0, ShotSpeed,
-                            1)
+                            health:1)
                     );
                     break;
                 case BagelType.Clone:
@@ -102,7 +105,7 @@ namespace Shooter
             var angle = rand.NextDouble() * Math.PI * 2;
             entityAdder.AddEntity(
                 new BagelEnemy(bagelType,
-                    null,
+                    sizeProvider,
                     entityAdder,
                     X, Y,
                     (float) (ShotSpeed * Math.Cos(angle)),
@@ -111,7 +114,7 @@ namespace Shooter
             );
             entityAdder.AddEntity(
                 new BagelEnemy(bagelType,
-                    null,
+                    sizeProvider,
                     entityAdder,
                     X, Y,
                     -(float) (ShotSpeed * Math.Cos(angle)),
@@ -120,7 +123,7 @@ namespace Shooter
             );
             entityAdder.AddEntity(
                 new BagelEnemy(bagelType,
-                    null,
+                    sizeProvider,
                     entityAdder,
                     X, Y,
                     (float) (ShotSpeed * Math.Sin(angle)),
@@ -129,7 +132,7 @@ namespace Shooter
             );
             entityAdder.AddEntity(
                 new BagelEnemy(bagelType,
-                    null,
+                    sizeProvider,
                     entityAdder,
                     X, Y,
                     -(float) (ShotSpeed * Math.Sin(angle)),
@@ -142,7 +145,7 @@ namespace Shooter
         {
             var newX = X + VelX;
             var newY = Y + VelY;
-            if ((newX - CollisionBox.Width / 2 < 0 || newX + CollisionBox.Width / 2 > sizeProvider.Width) &&
+          if ((newX - CollisionBox.Width / 2 < 0 || newX + CollisionBox.Width / 2 > sizeProvider.Width) &&
                 !(CollisionBox.Left < 0 || CollisionBox.Right > sizeProvider.Width))
             {
                 if (BagelType == BagelType.Bouncing)

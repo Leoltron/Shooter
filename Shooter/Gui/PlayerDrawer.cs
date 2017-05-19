@@ -17,7 +17,7 @@ namespace Shooter.Gui
             BoostersBitmaps = new Bitmap[Player.MaxBoostersLevel];
             for (var i = 0; i < BoostersBitmaps.Length; i++)
                 BoostersBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Boosters_{i}.png");
-            GunsBitmaps = new Bitmap[Player.MaxGunsAmountLevel];
+            GunsBitmaps = new Bitmap[Player.MaxGunsAmountLevel+1];
             for (var i = 0; i < GunsBitmaps.Length; i++)
                 GunsBitmaps[i] = (Bitmap) Image.FromFile(playerImagesDirectoryFullName + $"Guns\\Basic\\{i}.png");
         }

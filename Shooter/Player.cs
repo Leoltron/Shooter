@@ -13,7 +13,7 @@ namespace Shooter
         public int BoostersLevel { get; private set; }
         public const int MaxBoostersLevel = 3;
         public int GunsAmountLevel { get; private set; }
-        public const int MaxGunsAmountLevel = 3;
+        public const int MaxGunsAmountLevel = 1;
 
         public int InvincibilityTime { get; private set; }
         public const int MaxInvincibilityTime = 80;
@@ -82,7 +82,8 @@ namespace Shooter
         {
             if (InvincibilityTime > 0) return;
             base.DamageEntity(source, damage);
-            InvincibilityTime = MaxInvincibilityTime;
+            if(damage > 0)
+                InvincibilityTime = MaxInvincibilityTime;
         }
 
         public override void Move()
@@ -98,6 +99,7 @@ namespace Shooter
         public void UpgradeBoosters()
         {
             BoostersLevel = Math.Min(BoostersLevel + 1, MaxBoostersLevel);
+            SpeedMultiplier = BoostersLevel*0.25f + 1;
         }
 
         public void UpgradeGunsAmount()

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BagelEnemy.cs" />
+    <Compile Include="EnemyGenerator.cs" />
     <Compile Include="Gui\BackgroundDrawer.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="CollisionBox.cs" />
